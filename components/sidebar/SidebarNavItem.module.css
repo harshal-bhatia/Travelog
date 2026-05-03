@@ -1,0 +1,157 @@
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  color: var(--color-text-muted);
+  text-decoration: none;
+}
+
+.item:hover {
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+}
+
+.active {
+  background: var(--color-primary-soft);
+  color: var(--color-text);
+}
+
+.icon {
+  font-size: 19px;
+  flex-shrink: 0;
+}
+
+.label {
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+
+/* Trip Sidebar (dark panel) */
+
+.tripSidebar {
+  width: 68px;
+  background: #0f172a;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  flex-shrink: 0;
+}
+
+.tripTop {
+  margin-bottom: 20px;
+}
+
+.logoIcon {
+  width: 38px;
+  height: 38px;
+  background: var(--color-primary);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+}
+
+.logoIcon span {
+  font-size: 18px;
+}
+
+/* Trip list */
+
+.tripList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  align-items: center;
+  overflow-y: auto;
+  padding: 0 0 12px;
+  width: 100%;
+}
+
+.tripItem {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  border: 2px solid transparent;
+  flex-shrink: 0;
+}
+
+.tripItem:hover {
+  background: #334155;
+}
+
+.tripAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #334155;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: white;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Active Trip */
+
+.activeTrip {
+  background: rgba(17, 212, 17, 0.12);
+  border-color: var(--color-primary);
+}
+
+.activeTrip .tripAvatar {
+  background: rgba(17, 212, 17, 0.2);
+}
+
+.activeIndicator {
+  position: absolute;
+  left: -8px;
+  width: 3px;
+  height: 24px;
+  background: var(--color-primary);
+  border-radius: 0 4px 4px 0;
+}
+
+/* Add Trip */
+
+.addTrip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: transparent;
+  border: 2px dashed rgba(255, 255, 255, 0.12);
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.addTrip:hover {
+  border-color: rgba(17, 212, 17, 0.4);
+  color: var(--color-primary);
+  background: rgba(17, 212, 17, 0.06);
+}
+
+.addTrip span {
+  font-size: 18px;
+}

@@ -1,0 +1,28 @@
+.button {
+  background: var(--color-primary);
+  color: #0f172a;
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 12px 22px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.button:hover {
+  opacity: 0.9;
+  transform: scale(1.01);
+}
+
+.button:active {
+  transform: scale(0.98);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

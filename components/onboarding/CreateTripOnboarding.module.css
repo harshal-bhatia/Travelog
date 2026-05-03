@@ -1,0 +1,159 @@
+.wrapper {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.visualSection {
+  position: relative;
+  margin-bottom: 48px;
+}
+
+.glow {
+  position: absolute;
+  inset: -16px;
+  background: var(--color-primary-soft);
+  border-radius: var(--radius-full);
+  filter: blur(48px);
+}
+
+.heroCard {
+  position: relative;
+  width: 288px;
+  height: 192px;
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-apple);
+  border: 1px solid var(--color-border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.1;
+  background-image: radial-gradient(var(--color-primary) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+.heroContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.iconCircle {
+  width: 64px;
+  height: 64px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 16px;
+}
+
+.progressLines {
+  display: flex;
+  gap: 8px;
+}
+
+.progressLines span {
+  width: 32px;
+  height: 4px;
+  background: var(--color-primary-soft-2);
+  border-radius: var(--radius-full);
+}
+
+.progressLines .activeLine {
+  width: 48px;
+  background: var(--color-primary);
+}
+
+.floatingCardRight,
+.floatingCardLeft {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-apple);
+  border: 1px solid var(--color-border-light);
+  padding: 12px;
+}
+
+.floatingCardRight {
+  right: -24px;
+  bottom: -24px;
+  transform: rotate(6deg);
+}
+
+.floatingCardLeft {
+  left: -32px;
+  top: -16px;
+  transform: rotate(-12deg);
+}
+
+.floatingInner {
+  width: 100%;
+  height: 100%;
+  background: var(--color-surface-soft);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-light);
+  font-size: 24px;
+}
+
+.textSection {
+  max-width: 520px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.textSection h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.textSection p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+}
+
+.actions {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.linkButton {
+  border: none;
+  background: transparent;
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.linkButton:hover {
+  opacity: 0.85;
+}
