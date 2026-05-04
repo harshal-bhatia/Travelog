@@ -31,6 +31,8 @@ function getCategoryLabel(cat: string) {
   return EXPENSE_CATEGORIES.find((c) => c.value === cat)?.label ?? "Other";
 }
 
+console.log("Auto deploy works!");
+
 export default function DashboardPage() {
   const [hasTrips, setHasTrips] = useState<boolean | null>(null);
   const [trip, setTrip] = useState<Trip | null>(null);
@@ -84,7 +86,8 @@ export default function DashboardPage() {
   if (!hasTrips) return <CreateTripOnboarding onCreate={handleCreateTrip} />;
 
   const budget = trip?.budget ?? 0;
-  const percentage = budget > 0 ? Math.min((totalSpent / budget) * 100, 100) : 0;
+  const percentage =
+    budget > 0 ? Math.min((totalSpent / budget) * 100, 100) : 0;
   const remaining = budget - totalSpent;
   const remainingPct = budget > 0 ? Math.max(100 - percentage, 0) : 100;
 
@@ -122,9 +125,7 @@ export default function DashboardPage() {
     <div>
       <div className={styles.pageHeader}>
         <div>
-          <h1 className={styles.pageTitle}>
-            {trip ? trip.name : "Dashboard"}
-          </h1>
+          <h1 className={styles.pageTitle}>{trip ? trip.name : "Dashboard"}</h1>
           <p className={styles.pageSubtitle}>
             {trip
               ? `${trip.destination}${trip.startDate ? ` · ${format(parseISO(trip.startDate), "MMM d, yyyy")}` : ""}`
@@ -172,7 +173,9 @@ export default function DashboardPage() {
                 </p>
                 <p
                   className={styles.remaining}
-                  style={{ color: isOverBudget ? "var(--color-danger)" : undefined }}
+                  style={{
+                    color: isOverBudget ? "var(--color-danger)" : undefined,
+                  }}
                 >
                   {Math.round(remainingPct)}% available
                 </p>
@@ -244,12 +247,17 @@ export default function DashboardPage() {
 
         <div className={pageStyles.rightCol}>
           <div className={pageStyles.quickLinks}>
-            <h3 className={pageStyles.sectionTitle} style={{ marginBottom: 16 }}>
+            <h3
+              className={pageStyles.sectionTitle}
+              style={{ marginBottom: 16 }}
+            >
               Quick Access
             </h3>
             <Link href="/itinerary" className={pageStyles.quickCard}>
               <div className={pageStyles.quickIcon}>
-                <span className="material-symbols-outlined">calendar_month</span>
+                <span className="material-symbols-outlined">
+                  calendar_month
+                </span>
               </div>
               <div>
                 <p className={pageStyles.quickLabel}>Itinerary</p>
@@ -257,7 +265,9 @@ export default function DashboardPage() {
                   {activitiesCount} activit{activitiesCount === 1 ? "y" : "ies"}
                 </p>
               </div>
-              <span className={`material-symbols-outlined ${pageStyles.quickArrow}`}>
+              <span
+                className={`material-symbols-outlined ${pageStyles.quickArrow}`}
+              >
                 chevron_right
               </span>
             </Link>
@@ -271,13 +281,17 @@ export default function DashboardPage() {
                   {notesCount} note{notesCount === 1 ? "" : "s"}
                 </p>
               </div>
-              <span className={`material-symbols-outlined ${pageStyles.quickArrow}`}>
+              <span
+                className={`material-symbols-outlined ${pageStyles.quickArrow}`}
+              >
                 chevron_right
               </span>
             </Link>
             <Link href="/expenses" className={pageStyles.quickCard}>
               <div className={pageStyles.quickIcon}>
-                <span className="material-symbols-outlined">account_balance_wallet</span>
+                <span className="material-symbols-outlined">
+                  account_balance_wallet
+                </span>
               </div>
               <div>
                 <p className={pageStyles.quickLabel}>Expenses</p>
@@ -285,7 +299,9 @@ export default function DashboardPage() {
                   {formatCurrency(totalSpent)} logged
                 </p>
               </div>
-              <span className={`material-symbols-outlined ${pageStyles.quickArrow}`}>
+              <span
+                className={`material-symbols-outlined ${pageStyles.quickArrow}`}
+              >
                 chevron_right
               </span>
             </Link>
@@ -297,7 +313,9 @@ export default function DashboardPage() {
                 <p className={pageStyles.quickLabel}>Trip Details</p>
                 <p className={pageStyles.quickSub}>View & edit trip info</p>
               </div>
-              <span className={`material-symbols-outlined ${pageStyles.quickArrow}`}>
+              <span
+                className={`material-symbols-outlined ${pageStyles.quickArrow}`}
+              >
                 chevron_right
               </span>
             </Link>
