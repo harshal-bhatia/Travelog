@@ -4,6 +4,7 @@ import SidebarNavItem from "@/components/sidebar/SidebarNavItem";
 import SidebarTrip from "@/components/sidebar/SidebarTripDynamic";
 import ServiceWorkerRegistrar from "@/components/pwa/ServiceWorkerRegistrar";
 import InstallPrompt from "@/components/pwa/InstallPrompt";
+import BottomNav from "@/components/bottomNav/BottomNav";
 
 export default function DashboardLayout({
   children,
@@ -38,6 +39,7 @@ export default function DashboardLayout({
         <ServiceWorkerRegistrar />
         <InstallPrompt />
       </main>
+      <BottomNav />
     </div>
   );
 }

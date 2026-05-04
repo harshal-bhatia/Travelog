@@ -5,7 +5,9 @@
   padding: 9px 12px;
   border-radius: var(--radius-lg);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
   color: var(--color-text-muted);
   text-decoration: none;
 }
@@ -154,4 +156,10 @@
 
 .addTrip span {
   font-size: 18px;
+}
+
+@media (max-width: 768px) {
+  .tripSidebar {
+    display: none;
+  }
 }
