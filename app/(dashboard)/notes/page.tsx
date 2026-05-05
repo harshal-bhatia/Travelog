@@ -2,7 +2,12 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { getActiveTripId } from "@/lib/trips";
-import { getNotesByTrip, createNote, updateNote, deleteNote } from "@/lib/notes";
+import {
+  getNotesByTrip,
+  createNote,
+  updateNote,
+  deleteNote,
+} from "@/lib/notes";
 import { Note, CreateNoteFormValues } from "@/types/notes";
 import styles from "./notes.module.css";
 import layoutStyles from "../dashboardLayout.module.css";
@@ -20,16 +25,23 @@ export default function NotesPage() {
   const [form, setForm] = useState<CreateNoteFormValues>(DEFAULT_FORM);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [viewingNote, setViewingNote] = useState<Note | null>(null);
+  const [activeTripId, setActiveTripId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const tripId = getActiveTripId();
-    if (!tripId) { setLoading(false); return; }
+    if (!tripId) {
+      setLoading(false);
+      return;
+    }
+    setActiveTripId(tripId);
     const data = await getNotesByTrip(tripId);
     setNotes(data);
     setLoading(false);
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   useEffect(() => {
     const refresh = () => load();
@@ -101,53 +113,64 @@ export default function NotesPage() {
             Capture thoughts, memories, and ideas from your trip
           </p>
         </div>
-        <Button onClick={openCreate}>
-          <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>add</span>
-            New Note
-          </span>
-        </Button>
+        {activeTripId && (
+          <Button onClick={openCreate}>
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: 18 }}
+              >
+                add
+              </span>
+              New Note
+            </span>
+          </Button>
+        )}
       </div>
 
-      {loading ? null : notes.length === 0 ? (
-        <div className={styles.emptyState}>
-          <span className="material-symbols-outlined">menu_book</span>
-          <p>No notes yet</p>
-          <button className={styles.emptyAction} onClick={openCreate}>
-            Write your first note
-          </button>
-        </div>
-      ) : (
-        <div className={styles.notesGrid}>
-          {notes.map((note) => (
-            <div
-              key={note.id}
-              className={styles.noteCard}
-              onClick={() => setViewingNote(note)}
-            >
-              <div className={styles.noteCardTop}>
-                <h3 className={styles.noteTitle}>{note.title}</h3>
-                <button
-                  className={styles.editBtn}
-                  onClick={(e) => { e.stopPropagation(); openEdit(note); }}
-                  aria-label="Edit note"
-                >
-                  <span className="material-symbols-outlined">edit</span>
-                </button>
+      {activeTripId &&
+        (loading ? null : notes.length === 0 ? (
+          <div className={styles.emptyState}>
+            <span className="material-symbols-outlined">menu_book</span>
+            <p>No notes yet</p>
+            <button className={styles.emptyAction} onClick={openCreate}>
+              Write your first note
+            </button>
+          </div>
+        ) : (
+          <div className={styles.notesGrid}>
+            {notes.map((note) => (
+              <div
+                key={note.id}
+                className={styles.noteCard}
+                onClick={() => setViewingNote(note)}
+              >
+                <div className={styles.noteCardTop}>
+                  <h3 className={styles.noteTitle}>{note.title}</h3>
+                  <button
+                    className={styles.editBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openEdit(note);
+                    }}
+                    aria-label="Edit note"
+                  >
+                    <span className="material-symbols-outlined">edit</span>
+                  </button>
+                </div>
+                <p className={styles.notePreview}>{getPreview(note.content)}</p>
+                <p className={styles.noteMeta}>
+                  {format(parseISO(note.updatedAt), "MMM d, yyyy")}
+                </p>
               </div>
-              <p className={styles.notePreview}>{getPreview(note.content)}</p>
-              <p className={styles.noteMeta}>
-                {format(parseISO(note.updatedAt), "MMM d, yyyy")}
-              </p>
-            </div>
-          ))}
+            ))}
 
-          <button className={styles.addCard} onClick={openCreate}>
-            <span className="material-symbols-outlined">add</span>
-            <span>New note</span>
-          </button>
-        </div>
-      )}
+            <button className={styles.addCard} onClick={openCreate}>
+              <span className="material-symbols-outlined">add</span>
+              <span>New note</span>
+            </button>
+          </div>
+        ))}
 
       <Modal
         open={isModalOpen}
@@ -161,7 +184,9 @@ export default function NotesPage() {
               className={styles.input}
               placeholder="e.g. First morning in the mountains"
               value={form.title}
-              onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, title: e.target.value }))
+              }
               required
             />
           </div>
@@ -171,13 +196,19 @@ export default function NotesPage() {
               className={styles.textarea}
               placeholder="Write your thoughts, memories, plans..."
               value={form.content}
-              onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, content: e.target.value }))
+              }
               rows={8}
             />
           </div>
           <div className={styles.actions}>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : editingNote ? "Save Changes" : "Save Note"}
+              {isSubmitting
+                ? "Saving..."
+                : editingNote
+                  ? "Save Changes"
+                  : "Save Note"}
             </Button>
             {editingNote && (
               <button
@@ -189,7 +220,12 @@ export default function NotesPage() {
                 Delete
               </button>
             )}
-            <button type="button" className={styles.cancelBtn} onClick={closeModal} disabled={isSubmitting}>
+            <button
+              type="button"
+              className={styles.cancelBtn}
+              onClick={closeModal}
+              disabled={isSubmitting}
+            >
               Cancel
             </button>
           </div>
@@ -204,15 +240,19 @@ export default function NotesPage() {
         >
           <div className={styles.viewContent}>
             <p className={styles.viewMeta}>
-              Last updated {format(parseISO(viewingNote.updatedAt), "MMMM d, yyyy 'at' h:mm a")}
+              Last updated{" "}
+              {format(
+                parseISO(viewingNote.updatedAt),
+                "MMMM d, yyyy 'at' h:mm a",
+              )}
             </p>
             <div className={styles.viewBody}>
-              {viewingNote.content || <span className={styles.empty}>No content</span>}
+              {viewingNote.content || (
+                <span className={styles.empty}>No content</span>
+              )}
             </div>
             <div className={styles.viewActions}>
-              <Button onClick={() => openEdit(viewingNote)}>
-                Edit Note
-              </Button>
+              <Button onClick={() => openEdit(viewingNote)}>Edit Note</Button>
               <button
                 className={styles.deleteBtn}
                 onClick={() => handleDelete(viewingNote.id)}

@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@fontsource/material-symbols-outlined": "^5.2.43",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dexie": "^4.3.0",

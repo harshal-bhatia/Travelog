@@ -54,7 +54,8 @@
   font-weight: 800;
 }
 
-.sub {
+.sub,
+.sub2 {
   font-size: 0.75rem;
   opacity: 0.6;
   margin-top: 2px;

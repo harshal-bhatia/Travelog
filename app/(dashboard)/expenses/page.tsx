@@ -7,7 +7,12 @@ import {
   createExpense,
   deleteExpense,
 } from "@/lib/expenses";
-import { Expense, EXPENSE_CATEGORIES, ExpenseCategory, CreateExpenseFormValues } from "@/types/expenses";
+import {
+  Expense,
+  EXPENSE_CATEGORIES,
+  ExpenseCategory,
+  CreateExpenseFormValues,
+} from "@/types/expenses";
 import styles from "./expenses.module.css";
 import layoutStyles from "../dashboardLayout.module.css";
 import Modal from "@/components/ui/Modal/Modal";
@@ -47,17 +52,26 @@ export default function ExpensesPage() {
   const [form, setForm] = useState<CreateExpenseFormValues>(makeDefaultForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-  const [activeFilter, setActiveFilter] = useState<ExpenseCategory | "all">("all");
+  const [activeFilter, setActiveFilter] = useState<ExpenseCategory | "all">(
+    "all",
+  );
+  const [activeTripId, setActiveTripId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const tripId = getActiveTripId();
-    if (!tripId) { setLoading(false); return; }
+    if (!tripId) {
+      setLoading(false);
+      return;
+    }
+    setActiveTripId(tripId);
     const data = await getExpensesByTrip(tripId);
     setExpenses(data);
     setLoading(false);
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   useEffect(() => {
     const refresh = () => load();
@@ -135,125 +149,142 @@ export default function ExpensesPage() {
             Track and manage your trip spending
           </p>
         </div>
-        <Button onClick={() => setIsModalOpen(true)}>
-          <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>add</span>
-            Add Expense
-          </span>
-        </Button>
-      </div>
-
-      <div className={styles.summaryGrid}>
-        <div className={styles.totalCard}>
-          <p className={styles.totalLabel}>Total Spent</p>
-          <p className={styles.totalValue}>{formatCurrency(total)}</p>
-          <p className={styles.totalSub}>{expenses.length} transactions</p>
-        </div>
-        {byCategory.map((cat) => (
-          <div
-            key={cat.value}
-            className={`${styles.catCard} ${activeFilter === cat.value ? styles.catCardActive : ""}`}
-            onClick={() =>
-              setActiveFilter((prev) =>
-                prev === cat.value ? "all" : cat.value,
-              )
-            }
-          >
-            <div className={styles.catIcon}>
-              <span className="material-symbols-outlined">{cat.icon}</span>
-            </div>
-            <div>
-              <p className={styles.catLabel}>{cat.label}</p>
-              <p className={styles.catValue}>{formatCurrency(cat.total)}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className={styles.listHeader}>
-        <div className={styles.filters}>
-          <button
-            className={`${styles.filterBtn} ${activeFilter === "all" ? styles.filterActive : ""}`}
-            onClick={() => setActiveFilter("all")}
-          >
-            All
-          </button>
-          {EXPENSE_CATEGORIES.map((cat) => (
-            <button
-              key={cat.value}
-              className={`${styles.filterBtn} ${activeFilter === cat.value ? styles.filterActive : ""}`}
-              onClick={() =>
-                setActiveFilter((prev) =>
-                  prev === cat.value ? "all" : cat.value,
-                )
-              }
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-        {activeFilter !== "all" && (
-          <p className={styles.filterTotal}>
-            {formatCurrency(filteredTotal)} in {getCategoryLabel(activeFilter)}
-          </p>
+        {activeTripId && (
+          <Button onClick={() => setIsModalOpen(true)}>
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: 18 }}
+              >
+                add
+              </span>
+              Add Expense
+            </span>
+          </Button>
         )}
       </div>
-
-      {loading ? null : filtered.length === 0 ? (
-        <div className={styles.emptyState}>
-          <span className="material-symbols-outlined">receipt_long</span>
-          <p>No expenses yet</p>
-          <button
-            className={styles.emptyAction}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Log your first expense
-          </button>
-        </div>
-      ) : (
-        <div className={styles.expenseGroups}>
-          {sortedDates.map((date) => (
-            <div key={date} className={styles.dateGroup}>
-              <p className={styles.dateLabel}>
-                {format(parseISO(date), "EEEE, MMMM d, yyyy")}
-              </p>
-              <div className={styles.expenseList}>
-                {groupedByDate[date].map((expense) => (
-                  <div key={expense.id} className={styles.expenseRow}>
-                    <div className={styles.expenseCatIcon}>
-                      <span className="material-symbols-outlined">
-                        {getCategoryIcon(expense.category)}
-                      </span>
-                    </div>
-                    <div className={styles.expenseInfo}>
-                      <p className={styles.expenseTitle}>{expense.title}</p>
-                      <p className={styles.expenseMeta}>
-                        {getCategoryLabel(expense.category)}
-                        {expense.note && ` · ${expense.note}`}
-                      </p>
-                    </div>
-                    <p className={styles.expenseAmount}>
-                      {formatCurrency(expense.amount)}
-                    </p>
-                    <button
-                      className={styles.deleteBtn}
-                      onClick={() => handleDelete(expense.id)}
-                      disabled={deletingId === expense.id}
-                      aria-label="Delete expense"
-                    >
-                      <span className="material-symbols-outlined">delete</span>
-                    </button>
-                  </div>
-                ))}
-              </div>
+      {activeTripId && (
+        <>
+          <div className={styles.summaryGrid}>
+            <div className={styles.totalCard}>
+              <p className={styles.totalLabel}>Total Spent</p>
+              <p className={styles.totalValue}>{formatCurrency(total)}</p>
+              <p className={styles.totalSub}>{expenses.length} transactions</p>
             </div>
-          ))}
-        </div>
-      )}
+            {byCategory.map((cat) => (
+              <div
+                key={cat.value}
+                className={`${styles.catCard} ${activeFilter === cat.value ? styles.catCardActive : ""}`}
+                onClick={() =>
+                  setActiveFilter((prev) =>
+                    prev === cat.value ? "all" : cat.value,
+                  )
+                }
+              >
+                <div className={styles.catIcon}>
+                  <span className="material-symbols-outlined">{cat.icon}</span>
+                </div>
+                <div>
+                  <p className={styles.catLabel}>{cat.label}</p>
+                  <p className={styles.catValue}>{formatCurrency(cat.total)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
 
+          <div className={styles.listHeader}>
+            <div className={styles.filters}>
+              <button
+                className={`${styles.filterBtn} ${activeFilter === "all" ? styles.filterActive : ""}`}
+                onClick={() => setActiveFilter("all")}
+              >
+                All
+              </button>
+              {EXPENSE_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.value}
+                  className={`${styles.filterBtn} ${activeFilter === cat.value ? styles.filterActive : ""}`}
+                  onClick={() =>
+                    setActiveFilter((prev) =>
+                      prev === cat.value ? "all" : cat.value,
+                    )
+                  }
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+            {activeFilter !== "all" && (
+              <p className={styles.filterTotal}>
+                {formatCurrency(filteredTotal)} in{" "}
+                {getCategoryLabel(activeFilter)}
+              </p>
+            )}
+          </div>
+
+          {loading ? null : filtered.length === 0 ? (
+            <div className={styles.emptyState}>
+              <span className="material-symbols-outlined">receipt_long</span>
+              <p>No expenses yet</p>
+              <button
+                className={styles.emptyAction}
+                onClick={() => setIsModalOpen(true)}
+              >
+                Log your first expense
+              </button>
+            </div>
+          ) : (
+            <div className={styles.expenseGroups}>
+              {sortedDates.map((date) => (
+                <div key={date} className={styles.dateGroup}>
+                  <p className={styles.dateLabel}>
+                    {format(parseISO(date), "EEEE, MMMM d, yyyy")}
+                  </p>
+                  <div className={styles.expenseList}>
+                    {groupedByDate[date].map((expense) => (
+                      <div key={expense.id} className={styles.expenseRow}>
+                        <div className={styles.expenseCatIcon}>
+                          <span className="material-symbols-outlined">
+                            {getCategoryIcon(expense.category)}
+                          </span>
+                        </div>
+                        <div className={styles.expenseInfo}>
+                          <p className={styles.expenseTitle}>{expense.title}</p>
+                          <p className={styles.expenseMeta}>
+                            {getCategoryLabel(expense.category)}
+                            {expense.note && ` · ${expense.note}`}
+                          </p>
+                        </div>
+                        <p className={styles.expenseAmount}>
+                          {formatCurrency(expense.amount)}
+                        </p>
+                        <button
+                          className={styles.deleteBtn}
+                          onClick={() => handleDelete(expense.id)}
+                          disabled={deletingId === expense.id}
+                          aria-label="Delete expense"
+                        >
+                          <span className="material-symbols-outlined">
+                            delete
+                          </span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
       <Modal
         open={isModalOpen}
-        onClose={() => { if (!isSubmitting) { setForm(makeDefaultForm()); setIsModalOpen(false); } }}
+        onClose={() => {
+          if (!isSubmitting) {
+            setForm(makeDefaultForm());
+            setIsModalOpen(false);
+          }
+        }}
         title="Log Expense"
       >
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -281,7 +312,9 @@ export default function ExpensesPage() {
                   step="1"
                   placeholder="0"
                   value={form.amount || ""}
-                  onChange={(e) => updateField("amount", Number(e.target.value))}
+                  onChange={(e) =>
+                    updateField("amount", Number(e.target.value))
+                  }
                   required
                 />
               </div>
@@ -332,7 +365,10 @@ export default function ExpensesPage() {
             <button
               type="button"
               className={styles.cancelBtn}
-              onClick={() => { setForm(makeDefaultForm()); setIsModalOpen(false); }}
+              onClick={() => {
+                setForm(makeDefaultForm());
+                setIsModalOpen(false);
+              }}
               disabled={isSubmitting}
             >
               Cancel

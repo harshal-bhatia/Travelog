@@ -45,6 +45,7 @@ export default function ItineraryPage() {
   const [form, setForm] = useState<CreateActivityFormValues>(makeDefaultForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [activeTripId, setActiveTripId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     const tripId = getActiveTripId();
@@ -52,6 +53,7 @@ export default function ItineraryPage() {
       setLoading(false);
       return;
     }
+    setActiveTripId(tripId);
     const data = await getActivitiesByTrip(tripId);
     setActivities(data);
     setLoading(false);
@@ -117,107 +119,110 @@ export default function ItineraryPage() {
             Plan and track your daily activities
           </p>
         </div>
-        <Button onClick={() => setIsModalOpen(true)}>
-          <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
-            <span
-              className="material-symbols-outlined"
-              style={{ fontSize: 18 }}
-            >
-              add
+        {activeTripId && (
+          <Button onClick={() => setIsModalOpen(true)}>
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span
+                className="material-symbols-outlined"
+                style={{ fontSize: 18 }}
+              >
+                add
+              </span>
+              Add Activity
             </span>
-            Add Activity
-          </span>
-        </Button>
+          </Button>
+        )}
       </div>
 
-      {loading ? null : activities.length === 0 ? (
-        <div className={styles.emptyState}>
-          <span className="material-symbols-outlined">calendar_month</span>
-          <p>No activities planned yet</p>
-          <button
-            className={styles.emptyAction}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Plan your first activity
-          </button>
-        </div>
-      ) : (
-        <div className={styles.timeline}>
-          {sortedDates.map((date, dateIdx) => (
-            <div key={date} className={styles.dayBlock}>
-              <div className={styles.dayHeader}>
-                <div className={styles.dayBadge}>Day {dateIdx + 1}</div>
-                <p className={styles.dayDate}>
-                  {format(parseISO(date), "EEEE, MMMM d, yyyy")}
-                </p>
-              </div>
+      {activeTripId &&
+        (loading ? null : activities.length === 0 ? (
+          <div className={styles.emptyState}>
+            <span className="material-symbols-outlined">calendar_month</span>
+            <p>No activities planned yet</p>
+            <button
+              className={styles.emptyAction}
+              onClick={() => setIsModalOpen(true)}
+            >
+              Plan your first activity
+            </button>
+          </div>
+        ) : (
+          <div className={styles.timeline}>
+            {sortedDates.map((date, dateIdx) => (
+              <div key={date} className={styles.dayBlock}>
+                <div className={styles.dayHeader}>
+                  <div className={styles.dayBadge}>Day {dateIdx + 1}</div>
+                  <p className={styles.dayDate}>
+                    {format(parseISO(date), "EEEE, MMMM d, yyyy")}
+                  </p>
+                </div>
 
-              <div className={styles.dayActivities}>
-                {groupedByDate[date].map((activity, i) => (
-                  <div key={activity.id} className={styles.activityCard}>
-                    <div className={styles.timelineConnector}>
-                      <div className={styles.dot} />
-                      {i < groupedByDate[date].length - 1 && (
-                        <div className={styles.line} />
-                      )}
-                    </div>
-                    <div className={styles.activityContent}>
-                      <div className={styles.activityHeader}>
-                        <div className={styles.activityTypeIcon}>
-                          <span className="material-symbols-outlined">
-                            {getTypeIcon(activity.type)}
-                          </span>
-                        </div>
-                        <div className={styles.activityMeta}>
-                          <h4 className={styles.activityTitle}>
-                            {activity.title}
-                          </h4>
-                          <div className={styles.activityTags}>
-                            <span className={styles.activityType}>
-                              {getTypeLabel(activity.type)}
-                            </span>
-                            {activity.time && (
-                              <span className={styles.activityTime}>
-                                <span className="material-symbols-outlined">
-                                  schedule
-                                </span>
-                                {activity.time}
-                              </span>
-                            )}
-                            {activity.location && (
-                              <span className={styles.activityLocation}>
-                                <span className="material-symbols-outlined">
-                                  location_on
-                                </span>
-                                {activity.location}
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                        <button
-                          className={styles.deleteBtn}
-                          onClick={() => handleDelete(activity.id)}
-                          disabled={deletingId === activity.id}
-                          aria-label="Delete activity"
-                        >
-                          <span className="material-symbols-outlined">
-                            delete
-                          </span>
-                        </button>
+                <div className={styles.dayActivities}>
+                  {groupedByDate[date].map((activity, i) => (
+                    <div key={activity.id} className={styles.activityCard}>
+                      <div className={styles.timelineConnector}>
+                        <div className={styles.dot} />
+                        {i < groupedByDate[date].length - 1 && (
+                          <div className={styles.line} />
+                        )}
                       </div>
-                      {activity.description && (
-                        <p className={styles.activityDesc}>
-                          {activity.description}
-                        </p>
-                      )}
+                      <div className={styles.activityContent}>
+                        <div className={styles.activityHeader}>
+                          <div className={styles.activityTypeIcon}>
+                            <span className="material-symbols-outlined">
+                              {getTypeIcon(activity.type)}
+                            </span>
+                          </div>
+                          <div className={styles.activityMeta}>
+                            <h4 className={styles.activityTitle}>
+                              {activity.title}
+                            </h4>
+                            <div className={styles.activityTags}>
+                              <span className={styles.activityType}>
+                                {getTypeLabel(activity.type)}
+                              </span>
+                              {activity.time && (
+                                <span className={styles.activityTime}>
+                                  <span className="material-symbols-outlined">
+                                    schedule
+                                  </span>
+                                  {activity.time}
+                                </span>
+                              )}
+                              {activity.location && (
+                                <span className={styles.activityLocation}>
+                                  <span className="material-symbols-outlined">
+                                    location_on
+                                  </span>
+                                  {activity.location}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <button
+                            className={styles.deleteBtn}
+                            onClick={() => handleDelete(activity.id)}
+                            disabled={deletingId === activity.id}
+                            aria-label="Delete activity"
+                          >
+                            <span className="material-symbols-outlined">
+                              delete
+                            </span>
+                          </button>
+                        </div>
+                        {activity.description && (
+                          <p className={styles.activityDesc}>
+                            {activity.description}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        ))}
 
       <Modal
         open={isModalOpen}
@@ -249,7 +254,9 @@ export default function ItineraryPage() {
                   key={type.value}
                   type="button"
                   className={`${styles.typeBtn} ${form.type === type.value ? styles.typeBtnActive : ""}`}
-                  onClick={() => updateField("type", type.value as ActivityType)}
+                  onClick={() =>
+                    updateField("type", type.value as ActivityType)
+                  }
                 >
                   <span className="material-symbols-outlined">{type.icon}</span>
                   <span>{type.label}</span>

@@ -5,6 +5,7 @@ import SidebarTrip from "@/components/sidebar/SidebarTripDynamic";
 import ServiceWorkerRegistrar from "@/components/pwa/ServiceWorkerRegistrar";
 import InstallPrompt from "@/components/pwa/InstallPrompt";
 import BottomNav from "@/components/bottomNav/BottomNav";
+import MobileNav from "@/components/header/MobileNav";
 
 export default function DashboardLayout({
   children,
@@ -33,13 +34,13 @@ export default function DashboardLayout({
           <SidebarNavItem icon="info" label="Trip Details" href="/profile" />
         </nav>
       </aside>
-
+      <MobileNav />
       <main className={styles.main} id="main-content">
         {children}
         <ServiceWorkerRegistrar />
         <InstallPrompt />
       </main>
-      <BottomNav />
+      {/* <BottomNav /> */}
     </div>
   );
 }

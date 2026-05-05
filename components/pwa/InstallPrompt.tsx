@@ -12,6 +12,7 @@ export default function InstallPrompt() {
   const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [dismissed, setDismissed] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
     const isStandalone =
@@ -27,6 +28,18 @@ export default function InstallPrompt() {
     const wasDismissed = localStorage.getItem("pwa-install-dismissed");
     if (wasDismissed) {
       setDismissed(true);
+      return;
+    }
+
+    const isIOSDevice =
+      /iphone|ipad|ipod/i.test(navigator.userAgent) &&
+      !(window as Window & { MSStream?: unknown }).MSStream;
+    const isSafariBrowser = /^((?!chrome|android).)*safari/i.test(
+      navigator.userAgent,
+    );
+
+    if (isIOSDevice || isSafariBrowser) {
+      setIsIOS(true);
       return;
     }
 
@@ -75,7 +88,33 @@ export default function InstallPrompt() {
     setPrompt(null);
   }
 
-  if (!prompt || dismissed || isInstalled) return null;
+  if (dismissed || isInstalled) return null;
+
+  if (isIOS) {
+    return (
+      <div className={styles.banner}>
+        <div className={styles.icon}>
+          <span className="material-symbols-outlined">ios_share</span>
+        </div>
+        <div className={styles.text}>
+          <p className={styles.title}>Install Travelog</p>
+          <p className={styles.sub2}>
+            Tap <strong>Share</strong> then{" "}
+            <strong>"Add to Home Screen"</strong>
+          </p>
+        </div>
+        <button
+          className={styles.closeBtn}
+          onClick={handleDismiss}
+          aria-label="Dismiss"
+        >
+          <span className="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    );
+  }
+
+  if (!prompt) return null;
 
   return (
     <div className={styles.banner}>

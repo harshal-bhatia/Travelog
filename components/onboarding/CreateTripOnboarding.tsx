@@ -58,9 +58,9 @@ export default function CreateTripOnboarding({
         <div className={styles.actions}>
           <Button onClick={() => setIsModalOpen(true)}>Create Trip</Button>
 
-          <button className={styles.linkButton} type="button">
+          {/* <button className={styles.linkButton} type="button">
             Need inspiration? Browse destinations
-          </button>
+          </button> */}
         </div>
       </div>
       <CreateTripModal
