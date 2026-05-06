@@ -41,6 +41,11 @@ export default function MobileNav() {
         trips={trips}
         activeTripId={activeTripId}
         onTripSelect={handleTripSelect}
+        onCreateTrip={() => {
+          window.dispatchEvent(new Event("openCreateTripModal"));
+          window.dispatchEvent(new Event("activeTripChanged"));
+          setIsOpen(false);
+        }}
       />
     </>
   );

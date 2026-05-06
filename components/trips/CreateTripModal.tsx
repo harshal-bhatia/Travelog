@@ -24,8 +24,8 @@ export default function CreateTripModal({
     startDate: "",
     endDate: "",
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const today = new Date().toISOString().split("T")[0];
 
   function updateField<K extends keyof CreateTripFormValues>(
     key: K,
@@ -133,8 +133,15 @@ export default function CreateTripModal({
             <input
               className={styles.nativeInput}
               type="date"
+              min={today}
               value={form.startDate}
-              onChange={(event) => updateField("startDate", event.target.value)}
+              onChange={(event) => {
+                const startDate = event.target.value;
+                updateField("startDate", startDate);
+                if (form.endDate && form.endDate < startDate) {
+                  updateField("endDate", "");
+                }
+              }}
             />
           </div>
         </div>
@@ -145,6 +152,7 @@ export default function CreateTripModal({
             className={styles.nativeInput}
             type="date"
             value={form.endDate}
+            min={form.startDate || today}
             onChange={(event) => updateField("endDate", event.target.value)}
           />
         </div>

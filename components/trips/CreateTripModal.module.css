@@ -102,11 +102,30 @@
 }
 
 @media (max-width: 640px) {
+  .form {
+    gap: 18px;
+  }
+
   .grid {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .actions {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 8px;
+    position: sticky;
+    bottom: 0;
+    background: var(--color-surface);
+    padding-top: 12px;
+  }
+
+  .nativeInput {
+    min-height: 36px;
+    font-size: 14px;
+  }
+
+  .cancelButton {
+    min-height: 36px;
   }
 }

@@ -1,8 +1,9 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "./MobileHeader.module.css";
+import CreateTripModal from "../trips/CreateTripModal";
 
 interface Trip {
   id: string;
@@ -15,6 +16,7 @@ interface Props {
   trips: Trip[];
   activeTripId: string | null;
   onTripSelect: (id: string) => void;
+  onCreateTrip: () => void;
 }
 
 export default function MobileDrawer({
@@ -23,8 +25,10 @@ export default function MobileDrawer({
   trips,
   activeTripId,
   onTripSelect,
+  onCreateTrip,
 }: Props) {
   const pathname = usePathname();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   // close on route change
   useEffect(() => {
@@ -83,7 +87,17 @@ export default function MobileDrawer({
         {trips.length > 0 && (
           <>
             <div className={styles.divider} />
-            <p className={styles.sectionLabel}>Your Trips</p>
+            <div className={styles.sectionHeader}>
+              <p className={styles.sectionLabel}>Your Trips</p>
+              <span
+                className="material-symbols-outlined"
+                onClick={() => setIsModalOpen(true)}
+                style={{ cursor: "pointer", fontSize: "1.2rem" }}
+                title="Create new trip"
+              >
+                add
+              </span>
+            </div>
             <div className={styles.trips}>
               {trips.map((trip) => (
                 <button
@@ -109,6 +123,11 @@ export default function MobileDrawer({
           </>
         )}
       </div>
+      <CreateTripModal
+        open={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={onCreateTrip}
+      />
     </>
   );
 }
